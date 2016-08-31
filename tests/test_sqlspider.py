@@ -14,7 +14,7 @@ class SqlMixinTestCase(unittest.TestCase):
         init_db()
 
         def log(message):
-            print message
+            print(message)
 
         self.spider = SqlMixin()
         self.spider.engine = engine

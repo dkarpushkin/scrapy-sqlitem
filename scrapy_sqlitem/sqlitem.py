@@ -1,3 +1,6 @@
+from functools import reduce
+
+import six
 from scrapy.item import Field, Item, ItemMeta
 
 from sqlalchemy.sql import and_
@@ -8,7 +11,7 @@ class SqlAlchemyItemMeta(ItemMeta):
     def __new__(mcs, class_name, bases, attrs):
         cls = super(SqlAlchemyItemMeta, mcs).__new__(mcs, class_name, bases, attrs)
 
-        if cls.sqlmodel is not None:
+        if hasattr(cls, 'sqlmodel') and cls.sqlmodel is not None:
             if cls.sqlmodel.__class__.__name__ == 'Table':
                 cls.table = cls.sqlmodel
             elif cls.sqlmodel.__class__.__name__ == 'DeclarativeMeta':
@@ -26,9 +29,9 @@ class SqlAlchemyItemMeta(ItemMeta):
         return cls
 
 
-class SqlItem(Item):
+class SqlItem(six.with_metaclass(SqlAlchemyItemMeta, Item)):
 
-    __metaclass__ = SqlAlchemyItemMeta
+    # __metaclass__ = SqlAlchemyItemMeta
 
     sqlmodel = None
 
